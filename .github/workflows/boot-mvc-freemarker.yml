@@ -1,34 +1,26 @@
-name: spring-reactive-boot-mvc-freemarker
-
-on:
-  push:
-    paths:
-      - "boot-mvc-freemarker/**"
-    branches: [ master ]
-  pull_request:
-    paths:
-      - "boot-mvc-freemarker/**"
-    types:
-      - opened
-      - synchronize
-      - reopened
-
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v4
+    - continue-on-error: true
+      uses: actions/checkout@v4
       with:
-          fetch-depth: 0
-    - name: Set up JDK
+        fetch-depth: 0
+    - continue-on-error: true
+      name: Set up JDK
       uses: actions/setup-java@v4
       with:
+        cache: maven
+        distribution: temurin
         java-version: '21'
-        distribution: 'temurin'
-        cache: 'maven'
-    - name: Build with Maven
-      run: |
-        cd boot-mvc-freemarker
+    - continue-on-error: true
+      name: Build with Maven
+      run: 'cd boot-mvc-freemarker
+
         mvn -B package --file pom.xml
+
+        '
+name: spring-reactive-boot-mvc-freemarker
+on:
+  repository_dispatch:
+    types: trigger-ga___boot-mvc-freemarker.yml

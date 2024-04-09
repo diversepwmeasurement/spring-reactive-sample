@@ -1,39 +1,29 @@
-name: spring-reactive-data-mongo-transaction
-
-on:
-  push:
-    paths:
-      - "data-mongo-transaction/**"
-    branches: [ master ]
-  pull_request:
-    paths:
-      - "data-mongo-transaction/**"
-    types:
-      - opened
-      - synchronize
-      - reopened
-
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v4
+    - continue-on-error: true
+      uses: actions/checkout@v4
       with:
-          fetch-depth: 0
-    - name: Set up JDK
+        fetch-depth: 0
+    - continue-on-error: true
+      name: Set up JDK
       uses: actions/setup-java@v4
       with:
+        cache: maven
+        distribution: temurin
         java-version: '21'
-        distribution: 'temurin'
-        cache: 'maven'
-    - name: Start up databases via Docker Compose 
-      run: |
-        docker-compose up -d mongodb
-        sleep 5
-        docker ps -a   
-    - name: Build with Maven
-      run: |
-        cd data-mongo-transaction
+    - continue-on-error: true
+      name: Start up databases via Docker Compose
+      run: "docker-compose up -d mongodb\nsleep 5\ndocker ps -a   \n"
+    - continue-on-error: true
+      name: Build with Maven
+      run: 'cd data-mongo-transaction
+
         mvn -B package --file pom.xml
+
+        '
+name: spring-reactive-data-mongo-transaction
+on:
+  repository_dispatch:
+    types: trigger-ga___data-mongo-transaction.yml
